@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class UserTest extends TestCase
 {
     /**
-     *  auto reroll database
+     *  auto database roll back.
      */
     use DatabaseTransactions;
 
@@ -36,11 +36,30 @@ class UserTest extends TestCase
         $this->assertEquals(true, $array['password'] == ['The password field is required.']);
     }
 
-    public function testReadUserInfoSuccess()
+    public function testGetUserById()
     {
         $userId = '6';
         $username = 'kebing';
         $response = $this->call('GET', $this->endpoint . $userId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, $array['user_found']['username'] == $username);
+    }
+
+    public function testGetUserByName()
+    {
+        $username = 'kebing';
+        $response = $this->call('GET', $this->endpoint . $username);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, $array['user_found']['username'] == $username);
+    }
+
+    public function testGetUserByEmail()
+    {
+        $email = 'kyu@kyu.com';
+        $username = 'kebing';
+        $response = $this->call('GET', $this->endpoint . $email);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, $array['user_found']['username'] == $username);

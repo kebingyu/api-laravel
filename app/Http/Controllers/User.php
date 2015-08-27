@@ -11,62 +11,31 @@ class User extends Controller
     {
         if (is_numeric($key))
         {
-            $message = $this->getUserById($key);
+            $user = UserModel::find($key);
         }
         /**
          * Todo: what if username contains "@"? 
          */
         else if (strpos($key, '@') !== false)
         {
-            $message = $this->getUserByEmail($key);
+            $user = UserModel::where('email', $key)->first();
         }
         else
         {
-            $message = $this->getUserByUsername($key);
+            $user = UserModel::where('username', $key)->first();
+        }
+
+        $message = [];
+        if ($user)
+        {
+            $message = [
+                'user_found' => [
+                    'username' => $user->username,
+                    'created at' => $user->created_at,
+                ],
+            ];
         }
         return json_encode($message); 
-    }
-
-    protected function getUserById($id)
-    {
-        if ($user = UserModel::find($id))
-        {
-            return [
-                'user_found' => [
-                    'username' => $user->username,
-                    'created at' => $user->created_at,
-                ],
-            ];
-        }
-        return [];
-    }
-
-    protected function getUserByEmail($email)
-    {
-        if ($user = UserModel::where('email', $email)->first())
-        {
-            return [
-                'user_found' => [
-                    'username' => $user->username,
-                    'created at' => $user->created_at,
-                ],
-            ];
-        }
-        return [];
-    }
-
-    protected function getUserByUsername($name)
-    {
-        if ($user = UserModel::where('username', $name)->first())
-        {
-            return [
-                'user_found' => [
-                    'username' => $user->username,
-                    'created at' => $user->created_at,
-                ],
-            ];
-        }
-        return [];
     }
 
     public function update($id)
