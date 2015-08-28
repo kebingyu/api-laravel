@@ -17,7 +17,8 @@ Route::get('/', function () {
 
 // Retrieve user info by primary key: id/username/email
 Route::get('/v1/user/{key}', [
-    'uses' => 'User@get',
+    //'middleware' => 'auth.basic.once',
+    'uses' => 'User@read',
 ]);
 
 // Sign up new user
@@ -35,7 +36,7 @@ Route::delete('/v1/user/{key}', [
     'uses' => 'User@delete',
 ]);
 
-// User login
+// User login by username or email
 Route::post('/v1/user/login', [
     'uses' => 'User@login',
 ]);

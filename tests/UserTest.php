@@ -7,18 +7,21 @@ use App\Models\User;
 
 class UserTest extends TestCase
 {
+    use WithoutMiddleware;
+
     protected $endpoint = '/v1/user/';
 
     private $testUsername = 'test';
     private $testUserEmail = 'test@test.com';
+    private $testPassword = '123456';
 
     public function testCreateUserSuccess()
     {
         $response = $this->call('POST', $this->endpoint, [
             'username'              => $this->testUsername,
             'email'                 => $this->testUserEmail,
-            'password'              => '123456',
-            'password_confirmation' => '123456',
+            'password'              => $this->testPassword,
+            'password_confirmation' => $this->testPassword,
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);

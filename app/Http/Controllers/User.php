@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User as UserModel;
 use App\Http\Controllers\Controller;
+//use App\Http\Requests\ReadUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 class User extends Controller
 {
-    public function get($key)
+    public function read($key)
     {
         $message = [];
         if ($user = $this->findUserByPrimaryKey($key))
@@ -28,7 +29,7 @@ class User extends Controller
         $message = [];
         if ($user = $this->findUserByPrimaryKey($key))
         {
-            $data = $request->input();
+            $data = array_filter($request->input());
             if (isset($data['password']))
             {
                 $data['password'] = bcrypt($data['password']);
