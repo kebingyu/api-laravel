@@ -54,8 +54,8 @@ class UserTest extends TestCase
 
     public function testUpdateUserSuccess()
     {
-        $response = $this->call('PUT', $this->endpoint, [
-            'is_active'              => 0,
+        $response = $this->call('PUT', $this->endpoint . $this->testUsername, [
+            'is_active'=> 0,
             'is_admin' => 1,
         ]);
         $this->assertEquals(200, $response->status());

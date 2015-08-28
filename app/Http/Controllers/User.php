@@ -28,7 +28,12 @@ class User extends Controller
         $message = [];
         if ($user = $this->findUserByPrimaryKey($key))
         {
-            $updated = $user->update($request->input());
+            $data = $request->input();
+            if (isset($data['password']))
+            {
+                $data['password'] = bcrypt($data['password']);
+            }
+            $updated = $user->update($data);
             if ($updated)
             {
                 $message = [
