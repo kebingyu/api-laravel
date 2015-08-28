@@ -55,7 +55,7 @@ class AccessToken extends Model
         {
             return static::isExpired($row, time());
         }
-        return false;
+        return true;
     }
 
     static public function logout(array $data)

@@ -18,7 +18,9 @@
 
 ## API
 
-* A GET to /v1/user/<key> : retrieve user info by user primary key id/name/email.
+* A GET to /v1/user/[:key] : retrieve user info by user primary key id/name/email.
 * A POST to /v1/user : register a new user.
-* A PUT to /v1/user/<key> : update user info by user primary key id/name/email.
-* A DELETE to /v1/user/<key> : delete user by user primary key id/name/email.
+* A PUT to /v1/user/[:key] : update user info by user primary key id/name/email.
+* A DELETE to /v1/user/[:key] : delete user by user primary key id/name/email.
+* A POST to /login : user log in.
+* A POST to /logout : user log out.
