@@ -12,11 +12,11 @@ class User extends Controller
     public function read($key)
     {
         $message = [];
-        if ($user = $this->findUserByPrimaryKey($key))
+        if ($user = UserModel::findUserByPrimaryKey($key))
         {
             $message = [
                 'user_found' => [
-                    'username' => $user->username,
+                    'username'   => $user->username,
                     'created at' => $user->created_at,
                 ],
             ];
@@ -27,23 +27,14 @@ class User extends Controller
     public function update(UpdateUserRequest $request, $key)
     {
         $message = [];
-        if ($user = $this->findUserByPrimaryKey($key))
+        if ($user = UserModel::updateUser($request->input(), $key))
         {
-            $data = array_filter($request->input());
-            if (isset($data['password']))
-            {
-                $data['password'] = bcrypt($data['password']);
-            }
-            $updated = $user->update($data);
-            if ($updated)
-            {
-                $message = [
-                    'user_updated' => [
-                        'username' => $user->username,
-                        'updated at' => $user->updated_at,
-                    ],
-                ];
-            }
+            $message = [
+                'user_updated' => [
+                    'username'   => $user->username,
+                    'updated at' => $user->updated_at,
+                ],
+            ];
         }
         return json_encode($message);
     }
@@ -51,42 +42,12 @@ class User extends Controller
     public function delete($key)
     {
         $message = [];
-        if ($user = $this->findUserByPrimaryKey($key))
+        if ($deleted = UserModel::deleteUser($key))
         {
             $message = [
-                'user_deleted' => $user->delete(),
+                'user_deleted' => $deleted,
             ];
         }
         return json_encode($message);
-    }
-
-    public function login($data)
-    {
-    }
-
-    public function logout()
-    {
-    }
-
-    protected function findUserByPrimaryKey($key)
-    {
-        if (is_numeric($key))
-        {
-            $user = UserModel::find($key);
-        }
-        else if ($this->isValidEmail($key))
-        {
-            $user = UserModel::where('email', $key)->first();
-        }
-        else
-        {
-            $user = UserModel::where('username', $key)->first();
-        }
-        return $user;
-    }
-
-    protected function isValidEmail($value)
-    {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 }

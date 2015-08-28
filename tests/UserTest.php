@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Models\User;
+use App\Models\AccessToken;
 
 class UserTest extends TestCase
 {
@@ -39,6 +40,18 @@ class UserTest extends TestCase
         $this->assertEquals(true, $array['password'] == ['The password field is required.']);
     }
 
+    /*
+    public function testUserLogin()
+    {
+        $response = $this->call('POST', '/login', [
+            'username' => $this->testUsername,
+            'password' => $this->testPassword,
+        ]);
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['user_loggedin']));
+    }
+     */
+
     public function testGetUserByName()
     {
         $response = $this->call('GET', $this->endpoint . $this->testUsername);
@@ -58,8 +71,8 @@ class UserTest extends TestCase
     public function testUpdateUserSuccess()
     {
         $response = $this->call('PUT', $this->endpoint . $this->testUsername, [
-            'is_active'=> 0,
-            'is_admin' => 1,
+            'is_active' => 0,
+            'is_admin'  => 1,
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
@@ -73,4 +86,18 @@ class UserTest extends TestCase
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, $array['user_deleted'] == 1);
     }
+
+    /*
+    public function testUserLogout()
+    {
+        $user = User::findUserByPrimaryKey($this->testUsername);
+        $token = AccessToken::find($user->id);
+        $response = $this->call('POST', '/logout', [
+            'user_id' => $token->user_id,
+            'token' => $token->token,
+        ]);
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['user_loggedout']));
+    }
+     */
 }

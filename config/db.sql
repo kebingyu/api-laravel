@@ -41,3 +41,11 @@ CREATE TABLE IF NOT EXISTS blog_tag (
     FOREIGN KEY (tag_id) REFERENCES tag(id),
     PRIMARY KEY (blog_id, tag_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS access_token (
+    user_id int(10) unsigned NOT NULL,
+    token char(32) NOT NULL,
+    created_at varchar(20) NOT NULL,
+    updated_at varchar(20) NOT NULL,
+    PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

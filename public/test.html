@@ -19,10 +19,16 @@
       <input type="hidden" name="_method" value="PUT">
       <input type="submit">
     </form>
-    <form action="/v1/user/login" method="post">
+    <form action="/login" method="post">
       <p>User login test</p>
       <input type="text" name="username">
       <input type="password" name="password">
+      <input type="submit">
+    </form>
+    <form action="/logout" method="post">
+      <p>User logout test</p>
+      <input type="text" name="user_id">
+      <input type="text" name="token">
       <input type="submit">
     </form>
   </body>

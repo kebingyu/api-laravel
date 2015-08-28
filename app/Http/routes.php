@@ -31,17 +31,17 @@ Route::put('/v1/user/{key}', [
     'uses' => 'User@update',
 ]);
 
-// Update user by primary key: id/username/email
+// Delete user by primary key: id/username/email
 Route::delete('/v1/user/{key}', [
     'uses' => 'User@delete',
 ]);
 
 // User login by username or email
-Route::post('/v1/user/login', [
-    'uses' => 'User@login',
+Route::post('/login', [
+    'uses' => 'Auth\AuthController@login',
 ]);
 
-// User logout
-Route::post('/v1/user/logout', [
-    'uses' => 'User@logout',
+// User logout with user id and access token
+Route::post('/logout', [
+    'uses' => 'Auth\AuthController@logout',
 ]);

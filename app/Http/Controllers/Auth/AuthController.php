@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\AccessToken;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\LogoutRequest;
 
 class AuthController extends Controller
 {
@@ -31,32 +34,50 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('guest', ['except' => 'getLogout']);
     }
 
     public function register(RegisterRequest $request)
     {
-        $user = $this->create($request->input());
-        return json_encode([
-            'user_created' => [
-                'username' => $user->username,
-                'created at' => $user->created_at,
-            ]
-        ]);
+        $message = [];
+        if ($user = User::createUser($request->input()))
+        {
+            $message = [
+                'user_created' => [
+                    'username'   => $user->username,
+                    'created at' => $user->created_at,
+                ]
+            ];
+        }
+        return json_encode($message);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
+    public function login(LoginRequest $request)
     {
-        return User::create([
-            'username'    => $data['username'],
-            'email'       => $data['email'],
-            'password'    => bcrypt($data['password']),
-        ]);
+        $message = [];
+        if (
+            ($userId = User::validate($request->input()))
+            && ($token = AccessToken::createToken($userId))
+        )
+        {
+            $message = [
+                'user_loggedin' => [
+                    'user_id' => $userId,
+                    'token'   => $token,
+                ],
+            ];
+        }
+        return json_encode($message);
+    }
+
+    public function logout(LogoutRequest $request)
+    {
+        $message = [];
+        if ($loggedout = AccessToken::logout($request->input()))
+        {
+            $message = [
+                'user_loggedout' => $loggedout,
+            ];
+        }
+        return json_encode($message);
     }
 }
