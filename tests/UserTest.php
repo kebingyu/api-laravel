@@ -3,73 +3,71 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use App\Models\User;
+
 class UserTest extends TestCase
 {
-    /**
-     *  auto database roll back.
-     */
-    use DatabaseTransactions;
-
     protected $endpoint = '/v1/user/';
+
+    private $testUsername = 'test';
+    private $testUserEmail = 'test@test.com';
 
     public function testCreateUserSuccess()
     {
         $response = $this->call('POST', $this->endpoint, [
-            'username'              => 'test',
-            'email'                 => 'test@test.com',
+            'username'              => $this->testUsername,
+            'email'                 => $this->testUserEmail,
             'password'              => '123456',
             'password_confirmation' => '123456',
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_created']['username'] == 'test');
+        $this->assertEquals(true, $array['user_created']['username'] == $this->testUsername);
     }
 
     public function testCreateUserFail()
     {
         $response = $this->call('POST', $this->endpoint, [
-            'username'              => 'test',
-            'email'                 => 'test@test.com',
+            'username' => $this->testUsername,
+            'email'    => $this->testUserEmail,
         ]);
         $this->assertEquals(400, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, $array['password'] == ['The password field is required.']);
     }
 
-    public function testGetUserById()
-    {
-        $userId = '6';
-        $username = 'kebing';
-        $response = $this->call('GET', $this->endpoint . $userId);
-        $this->assertEquals(200, $response->status());
-        $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_found']['username'] == $username);
-    }
-
     public function testGetUserByName()
     {
-        $username = 'kebing';
-        $response = $this->call('GET', $this->endpoint . $username);
+        $response = $this->call('GET', $this->endpoint . $this->testUsername);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_found']['username'] == $username);
+        $this->assertEquals(true, $array['user_found']['username'] == $this->testUsername);
     }
 
     public function testGetUserByEmail()
     {
-        $email = 'kyu@kyu.com';
-        $username = 'kebing';
-        $response = $this->call('GET', $this->endpoint . $email);
+        $response = $this->call('GET', $this->endpoint . $this->testUserEmail);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_found']['username'] == $username);
+        $this->assertEquals(true, $array['user_found']['username'] == $this->testUsername);
     }
 
-    public function testUserDelete()
+    public function testUpdateUserSuccess()
     {
-        $response = $this->call('DELETE', $this->endpoint . '1');
+        $response = $this->call('PUT', $this->endpoint, [
+            'is_active'              => 0,
+            'is_admin' => 1,
+        ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['deleted']['id'] == 1);
+        $this->assertEquals(true, $array['user_updated']['username'] == $this->testUsername);
+    }
+
+    public function testUserDeleteSuccess()
+    {
+        $response = $this->call('DELETE', $this->endpoint . $this->testUsername);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, $array['user_deleted'] == 1);
     }
 }

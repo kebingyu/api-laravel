@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Retrieve user info by id/username/email
+// Retrieve user info by primary key: id/username/email
 Route::get('/v1/user/{key}', [
     'uses' => 'User@get',
 ]);
@@ -25,13 +25,13 @@ Route::post('/v1/user', [
     'uses' => 'Auth\AuthController@register',
 ]);
 
-// Update user info
-Route::put('/v1/user/{id}', [
+// Update user info by primary key: id/username/email
+Route::put('/v1/user/{key}', [
     'uses' => 'User@update',
 ]);
 
-// Delete user
-Route::delete('/v1/user/{id}', [
+// Update user by primary key: id/username/email
+Route::delete('/v1/user/{key}', [
     'uses' => 'User@delete',
 ]);
 

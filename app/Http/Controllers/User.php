@@ -4,29 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User as UserModel;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 
 class User extends Controller
 {
     public function get($key)
     {
-        if (is_numeric($key))
-        {
-            $user = UserModel::find($key);
-        }
-        /**
-         * Todo: what if username contains "@"? 
-         */
-        else if (strpos($key, '@') !== false)
-        {
-            $user = UserModel::where('email', $key)->first();
-        }
-        else
-        {
-            $user = UserModel::where('username', $key)->first();
-        }
-
         $message = [];
-        if ($user)
+        if ($user = $this->findUserByPrimaryKey($key))
         {
             $message = [
                 'user_found' => [
@@ -35,20 +20,38 @@ class User extends Controller
                 ],
             ];
         }
-        return json_encode($message); 
+        return json_encode($message);
     }
 
-    public function update($id)
+    public function update(UpdateUserRequest $request, $key)
     {
+        $message = [];
+        if ($user = $this->findUserByPrimaryKey($key))
+        {
+            $updated = $user->update($request->input());
+            if ($updated)
+            {
+                $message = [
+                    'user_updated' => [
+                        'username' => $user->username,
+                        'updated at' => $user->updated_at,
+                    ],
+                ];
+            }
+        }
+        return json_encode($message);
     }
 
-    public function delete($id)
+    public function delete($key)
     {
-        return json_encode([
-            'deleted' => [
-                'id' => $id,
-            ],
-        ]);
+        $message = [];
+        if ($user = $this->findUserByPrimaryKey($key))
+        {
+            $message = [
+                'user_deleted' => $user->delete(),
+            ];
+        }
+        return json_encode($message);
     }
 
     public function login($data)
@@ -57,5 +60,27 @@ class User extends Controller
 
     public function logout()
     {
+    }
+
+    protected function findUserByPrimaryKey($key)
+    {
+        if (is_numeric($key))
+        {
+            $user = UserModel::find($key);
+        }
+        else if ($this->isValidEmail($key))
+        {
+            $user = UserModel::where('email', $key)->first();
+        }
+        else
+        {
+            $user = UserModel::where('username', $key)->first();
+        }
+        return $user;
+    }
+
+    protected function isValidEmail($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 }
