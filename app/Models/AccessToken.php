@@ -24,7 +24,7 @@ class AccessToken extends Model
 
     protected $primaryKey = 'user_id';
 
-    static protected $ttl = 60; // token TTL in second
+    static protected $ttl = 300; // token TTL in second
 
     static public function createToken($userId)
     {
@@ -46,8 +46,16 @@ class AccessToken extends Model
         return $row->token;
     }
 
-    static public function expired(array $data)
+    static public function expired($userId, $token)
     {
+        if (
+            ($row = static::find($userId))
+            && ($row->token == $token)
+        )
+        {
+            return static::isExpired($row, time());
+        }
+        return false;
     }
 
     static public function logout(array $data)

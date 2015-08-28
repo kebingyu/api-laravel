@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User as UserModel;
 use App\Http\Controllers\Controller;
-//use App\Http\Requests\ReadUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 class User extends Controller

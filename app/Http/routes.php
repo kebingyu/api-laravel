@@ -16,8 +16,9 @@ Route::get('/', function () {
 });
 
 // Retrieve user info by primary key: id/username/email
+// Need to append valid user_id and token to the query string
 Route::get('/v1/user/{key}', [
-    //'middleware' => 'auth.basic.once',
+    'middleware' => 'auth.access',
     'uses' => 'User@read',
 ]);
 
@@ -27,12 +28,16 @@ Route::post('/v1/user', [
 ]);
 
 // Update user info by primary key: id/username/email
+// Need to append valid user_id and token to the query string
 Route::put('/v1/user/{key}', [
+    'middleware' => 'auth.access',
     'uses' => 'User@update',
 ]);
 
 // Delete user by primary key: id/username/email
+// Need to append valid user_id and token to the query string
 Route::delete('/v1/user/{key}', [
+    'middleware' => 'auth.access',
     'uses' => 'User@delete',
 ]);
 
