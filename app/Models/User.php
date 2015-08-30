@@ -82,7 +82,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         {
             if (Hash::check($data['password'], $user->password))
             {
-                return $user->id;
+                return $user;
             }
         }
         return false;

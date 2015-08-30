@@ -30,8 +30,16 @@ class LoginRequest extends Request
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'username.required' => self::ERROR_VALIDATE_USERNAME_REQUIRED,
+            'password.required' => self::ERROR_VALIDATE_PASSWORD_REQUIRED,
+        ];
+    }
+
     public function response(array $errors)
     {
-        return Response::json($errors, 400);
+        return Response::json($this->parseErrorMessage($errors), 200);
     }
 }

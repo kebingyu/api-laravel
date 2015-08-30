@@ -14,7 +14,7 @@ class User extends Controller
         if ($user = UserModel::findUserByPrimaryKey($key))
         {
             $message = [
-                'user_found' => [
+                'success' => [
                     'username'   => $user->username,
                     'created at' => $user->created_at,
                 ],
@@ -29,7 +29,7 @@ class User extends Controller
         if ($user = UserModel::updateUser($request->input(), $key))
         {
             $message = [
-                'user_updated' => [
+                'success' => [
                     'username'   => $user->username,
                     'updated at' => $user->updated_at,
                 ],
@@ -44,7 +44,7 @@ class User extends Controller
         if ($deleted = UserModel::deleteUser($key))
         {
             $message = [
-                'user_deleted' => $deleted,
+                'success' => $deleted,
             ];
         }
         return json_encode($message);

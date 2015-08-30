@@ -26,7 +26,7 @@ class UserTest extends TestCase
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_created']['username'] == $this->testUsername);
+        $this->assertEquals(true, $array['success']['username'] == $this->testUsername);
     }
 
     public function testCreateUserFail()
@@ -35,9 +35,9 @@ class UserTest extends TestCase
             'username' => $this->testUsername,
             'email'    => $this->testUserEmail,
         ]);
-        $this->assertEquals(400, $response->status());
+        $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['password'] == ['The password field is required.']);
+        $this->assertEquals(true, isset($array['error']));
     }
 
     /*
@@ -57,7 +57,7 @@ class UserTest extends TestCase
         $response = $this->call('GET', $this->endpoint . $this->testUsername);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_found']['username'] == $this->testUsername);
+        $this->assertEquals(true, $array['success']['username'] == $this->testUsername);
     }
 
     public function testGetUserByEmail()
@@ -65,7 +65,7 @@ class UserTest extends TestCase
         $response = $this->call('GET', $this->endpoint . $this->testUserEmail);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_found']['username'] == $this->testUsername);
+        $this->assertEquals(true, $array['success']['username'] == $this->testUsername);
     }
 
     public function testUpdateUserSuccess()
@@ -76,7 +76,7 @@ class UserTest extends TestCase
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_updated']['username'] == $this->testUsername);
+        $this->assertEquals(true, $array['success']['username'] == $this->testUsername);
     }
 
     public function testUserDeleteSuccess()
@@ -84,7 +84,7 @@ class UserTest extends TestCase
         $response = $this->call('DELETE', $this->endpoint . $this->testUsername);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['user_deleted'] == 1);
+        $this->assertEquals(true, $array['success'] == 1);
     }
 
     /*
