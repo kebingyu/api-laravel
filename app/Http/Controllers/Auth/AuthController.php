@@ -92,9 +92,17 @@ class AuthController extends Controller
     {
         if ($loggedout = AccessToken::logout($request->input()))
         {
-            $message = [
-                'success' => [$loggedout],
-            ];
+            $message = $this->getMessage('success',
+                [
+                    'loggedout' => $loggedout,
+                ]
+            );
+        }
+        else
+        {
+            $message = $this->getMessage('error',
+                [false]
+            );
         }
         return json_encode($message);
     }

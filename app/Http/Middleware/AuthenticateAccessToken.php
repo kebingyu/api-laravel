@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\AccessToken;
+use App\Http\Requests\Request;
+use Response;
 
 class AuthenticateAccessToken
 {
@@ -15,14 +17,29 @@ class AuthenticateAccessToken
      */
     public function handle($request, Closure $next)
     {
-        if (
-            ($userId = $request->query('user_id'))
-            && ($token = $request->query('token'))
-            && !AccessToken::expired($userId, $token)
-        )
+        $message = [];
+        $userId = $request->query('user_id');
+        $token = $request->query('token');
+        if (!$userId)
         {
-            return $next($request);
+            $message['error'][] = Request::ERROR_VALIDATE_USER_ID_REQUIRED;
         }
-        return response('Unauthorized.', 401);
+        if (!$token)
+        {
+            $message['error'][] = Request::ERROR_VALIDATE_ACCESS_TOKEN_REQUIRED;
+        }
+
+        if (!isset($message['error']))
+        {
+            if (!AccessToken::expired($userId, $token))
+            {
+                return $next($request);
+            }
+            else
+            {
+                $message['error'][] = Request::ERROR_VALIDATE_ACCESS_TOKEN_EXPIRED;
+            }
+        }
+        return Response::json($message, 200);
     }
 }

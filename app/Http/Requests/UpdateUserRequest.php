@@ -35,11 +35,16 @@ class UpdateUserRequest extends Request
     public function messages()
     {
         return [
+            'email.email'        => self::ERROR_VALIDATE_EMAIL_VALID,
+            'email.max'          => self::ERROR_VALIDATE_EMAIL_MAXLENGTH,
+            'email.unique'       => self::ERROR_VALIDATE_EMAIL_UNIQUE,
+            'password.required'  => self::ERROR_VALIDATE_PASSWORD_REQUIRED,
+            'password.confirmed' => self::ERROR_VALIDATE_PASSWORD_CONFIRMED,
         ];
     }
 
     public function response(array $errors)
     {
-        return Response::json($errors, 400);
+        return Response::json($this->parseErrorMessage($errors), 200);
     }
 }

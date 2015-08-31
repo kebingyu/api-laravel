@@ -24,7 +24,7 @@ class AccessToken extends Model
 
     protected $primaryKey = 'user_id';
 
-    static protected $ttl = 300; // token TTL in second
+    static protected $ttl = 1800; // token TTL in second
 
     static public function createToken($userId)
     {
