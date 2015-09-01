@@ -13,13 +13,11 @@ class User extends Controller
     {
         if ($user = UserModel::findUserByPrimaryKey($key))
         {
-            $message = [
-                'success' => [
-                    'username'   => $user->username,
-                    'email'      => $user->email,
-                    'created_at' => $user->created_at,
-                ],
-            ];
+            $message = $this->getMessage('success', [
+                'username'   => $user->username,
+                'email'      => $user->email,
+                'created_at' => $user->created_at,
+            ]);
         }
         else
         {
@@ -34,12 +32,10 @@ class User extends Controller
     {
         if ($user = UserModel::updateUser($request->input(), $key))
         {
-            $message = [
-                'success' => [
-                    'username'   => $user->username,
-                    'updated at' => $user->updated_at,
-                ],
-            ];
+            $message = $this->getMessage('success', [
+                'username'   => $user->username,
+                'updated at' => $user->updated_at,
+            ]);
         }
         else
         {
@@ -54,9 +50,9 @@ class User extends Controller
     {
         if ($deleted = UserModel::deleteUser($key))
         {
-            $message = [
-                'success' => $deleted,
-            ];
+            $message = $this->getMessage('success', [
+                $deleted,
+            ]);
         }
         else
         {

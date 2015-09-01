@@ -84,7 +84,7 @@ class UserTest extends TestCase
         $response = $this->call('DELETE', $this->endpoint . $this->testUsername);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['success'] == 1);
+        $this->assertEquals(true, isset($array['success']));
     }
 
     /*

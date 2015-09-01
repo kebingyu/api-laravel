@@ -18,11 +18,14 @@ abstract class Request extends FormRequest
     const ERROR_VALIDATE_USER_ID_REQUIRED      = 'User Id is required to proceed.';
     const ERROR_VALIDATE_ACCESS_TOKEN_REQUIRED = 'Access Token is required to proceed.';
     const ERROR_VALIDATE_ACCESS_TOKEN_EXPIRED  = 'Access Token expired.';
+    const ERROR_VALIDATE_BLOG_TITLE_REQUIRED   = 'Please provide a blog title.';
+    const ERROR_VALIDATE_BLOG_CONTENT_REQUIRED = 'Please provide blog content.';
 
     const ERROR_VALIDATE_USER_CREDENTIAL       = 'Please re-enter your password.';
 
     const ERROR_DATABASE_INTERNAL_ERROR        = 'Internal error.';
     const ERROR_DATABASE_USER_NOT_FOUND        = 'User not found.';
+    const ERROR_DATABASE_BLOG_NOT_FOUND        = 'Blog not found.';
 
     protected function parseErrorMessage(array $errors)
     {

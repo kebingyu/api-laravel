@@ -15,30 +15,37 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Retrieve user info by primary key: id/username/email
 // Need to append valid user_id and token to the query string
-Route::get('/v1/user/{key}', [
-    'middleware' => 'auth.access',
-    'uses' => 'User@read',
-]);
+Route::group(['middleware' => 'auth.access'], function() {
+    // Retrieve user info by primary key: id/username/email
+    Route::get('/v1/user/{key}', [
+        'uses' => 'User@read',
+    ]);
+    // Update user info by primary key: id/username/email
+    Route::put('/v1/user/{key}', [
+        'uses' => 'User@update',
+    ]);
+    // Delete user by primary key: id/username/email
+    Route::delete('/v1/user/{key}', [
+        'uses' => 'User@delete',
+    ]);
+    // Create new blog
+    Route::post('/v1/blog', [
+        'uses' => 'Blog@create',
+    ]);
+    // Retrieve all blogs belong to user with user_id
+    Route::get('/v1/blog', [
+        'uses' => 'Blog@readAll',
+    ]);
+    // Retrieve blog info by blog id
+    Route::get('/v1/blog/{id}', [
+        'uses' => 'Blog@read',
+    ]);
+});
 
 // Sign up new user
 Route::post('/v1/user', [
     'uses' => 'Auth\AuthController@register',
-]);
-
-// Update user info by primary key: id/username/email
-// Need to append valid user_id and token to the query string
-Route::put('/v1/user/{key}', [
-    'middleware' => 'auth.access',
-    'uses' => 'User@update',
-]);
-
-// Delete user by primary key: id/username/email
-// Need to append valid user_id and token to the query string
-Route::delete('/v1/user/{key}', [
-    'middleware' => 'auth.access',
-    'uses' => 'User@delete',
 ]);
 
 // User login by username or email
