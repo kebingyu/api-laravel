@@ -9,7 +9,7 @@ class BlogTest extends TestCase
 {
     use WithoutMiddleware;
 
-    protected $endpoint      = '/v1/blog/';
+    protected $endpoint      = '/v1/blog';
 
     private $testUserId      = 1;
     private $testBlogId      = 1;
@@ -38,13 +38,11 @@ class BlogTest extends TestCase
         $this->assertEquals(true, count($array['success']) >= 1);
     }
 
-    /*
-    public function testReadBlogById()
+    public function testReadBlogByBlogId()
     {
-        $response = $this->call('GET', $this->endpoint . $this->testBlogId);
+        $response = $this->call('GET', $this->endpoint . '/' . $this->testBlogId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['success']['blog_id'] == $this->testBlogId);
+        $this->assertEquals(true, $array['success']['id'] == $this->testBlogId);
     }
-     */
 }
