@@ -22,4 +22,12 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $app;
     }
+
+    protected function prepareForTests($class)
+    {
+        Artisan::call('db:seed', [
+            '--class' => $class,
+            '--force' => true,
+        ]);
+    }
 }

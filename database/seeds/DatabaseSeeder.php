@@ -14,7 +14,17 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call(UserTableSeeder::class);
+        DB::table('user')->insert([
+            'username' => 'tester',
+            'email'    => 'tester@tester.com',
+            'password' => bcrypt('tester'),
+        ]);
+
+        DB::table('blog')->insert([
+            'title'   => 'Test blog title',
+            'content' => 'Test blog content.',
+            'user_id' => 1,
+        ]);
 
         Model::reguard();
     }

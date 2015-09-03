@@ -3,18 +3,31 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\Models\User;
-use App\Models\AccessToken;
-
 class UserTest extends TestCase
 {
     use WithoutMiddleware;
 
     protected $endpoint = '/v1/user/';
 
-    private $testUsername = 'test';
+    private $testUsername  = 'test';
     private $testUserEmail = 'test@test.com';
-    private $testPassword = '123456';
+    private $testPassword  = '123456';
+
+    // seeder data from database/seeds/DatabaseSeeder.php
+    private $seederUserId      = 1;
+    private $seederUsername    = 'tester';
+    private $seederEmail       = 'tester@tester.com';
+    private $seederPassword    = 'tester';
+
+    public function setUp()
+    {
+        parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
 
     public function testCreateUserSuccess()
     {
@@ -32,25 +45,13 @@ class UserTest extends TestCase
     public function testCreateUserFail()
     {
         $response = $this->call('POST', $this->endpoint, [
-            'username' => $this->testUsername,
-            'email'    => $this->testUserEmail,
+            'username' => $this->seederUsername,
+            'email'    => $this->seederEmail,
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['error']));
     }
-
-    /*
-    public function testUserLogin()
-    {
-        $response = $this->call('POST', '/login', [
-            'username' => $this->testUsername,
-            'password' => $this->testPassword,
-        ]);
-        $array = json_decode($response->content(), true);
-        $this->assertEquals(true, isset($array['user_loggedin']));
-    }
-     */
 
     public function testGetUserByName()
     {
@@ -87,17 +88,25 @@ class UserTest extends TestCase
         $this->assertEquals(true, isset($array['success']));
     }
 
+    public function testUserLogin()
+    {
+        $response = $this->call('POST', '/login', [
+            'username' => $this->seederUsername,
+            'password' => $this->seederPassword,
+        ]);
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']['token']));
+    }
+
     /*
     public function testUserLogout()
     {
-        $user = User::findUserByPrimaryKey($this->testUsername);
-        $token = AccessToken::find($user->id);
         $response = $this->call('POST', '/logout', [
-            'user_id' => $token->user_id,
-            'token' => $token->token,
+            'user_id' => $this->seederUserId,
+            'token' => $this->seederAccessToken,
         ]);
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, isset($array['user_loggedout']));
+        $this->assertEquals(true, isset($array['success']['loggedout']));
     }
      */
 }
