@@ -34,11 +34,26 @@ class Blog extends Model
         return static::create($data);
     }
 
-    static public function deleteUser($key)
+    static public function findBlog(array $data, $blogId = '')
     {
-        if ($user = static::findUserByPrimaryKey($key))
+        if ($blogId)
         {
-            return $user->delete();
+            $blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first();
+        }
+        else
+        {
+            // Collections of model
+            $blog = static::where('user_id', $data['user_id'])->get();
+        }
+        return $blog;
+    }
+
+    static public function updateBlog(array $data, $blogId)
+    {
+        if ($blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first())
+        {
+            $blog->update(array_filter($data));
+            return $blog;
         }
         return false;
     }

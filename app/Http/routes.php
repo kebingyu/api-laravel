@@ -41,6 +41,14 @@ Route::group(['middleware' => 'auth.access'], function() {
     Route::get('/v1/blog/{id}', [
         'uses' => 'Blog@read',
     ]);
+    // Update blog info by blog id
+    Route::put('/v1/blog/{id}', [
+        'uses' => 'Blog@update',
+    ]);
+    // Delete blog info by blog id
+    Route::delete('/v1/blog/{id}', [
+        'uses' => 'Blog@delete',
+    ]);
 });
 
 // Sign up new user

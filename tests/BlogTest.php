@@ -25,7 +25,7 @@ class BlogTest extends TestCase
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, isset($array['success']['blog_id']));
+        $this->assertEquals(true, isset($array['success']['id']));
         $this->assertEquals(true, isset($array['success']['created_at']));
     }
 
@@ -40,7 +40,19 @@ class BlogTest extends TestCase
 
     public function testReadBlogByBlogId()
     {
-        $response = $this->call('GET', $this->endpoint . '/' . $this->testBlogId);
+        $response = $this->call('GET', $this->endpoint
+            . '/' . $this->testBlogId . '?user_id=' . $this->testUserId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, $array['success']['id'] == $this->testBlogId);
+    }
+
+    public function testUpdateBlogByBlogId()
+    {
+        $response = $this->call('PUT', $this->endpoint 
+            . '/' . $this->testBlogId . '?user_id=' . $this->testUserId, [
+                'content'  => 'This is updated test blog',
+        ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, $array['success']['id'] == $this->testBlogId);
