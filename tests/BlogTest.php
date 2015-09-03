@@ -49,12 +49,21 @@ class BlogTest extends TestCase
 
     public function testUpdateBlogByBlogId()
     {
-        $response = $this->call('PUT', $this->endpoint 
+        $response = $this->call('PUT', $this->endpoint
             . '/' . $this->testBlogId . '?user_id=' . $this->testUserId, [
-                'content'  => 'This is updated test blog',
+                'content' => 'This is updated test blog',
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, $array['success']['id'] == $this->testBlogId);
+    }
+
+    public function testDeleteBlogByBlogId()
+    {
+        $response = $this->call('DELETE', $this->endpoint
+            . '/' . $this->testBlogId . '?user_id=' . $this->testUserId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']));
     }
 }

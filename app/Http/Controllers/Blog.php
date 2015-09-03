@@ -8,6 +8,7 @@ use App\Http\Requests\Request;
 use App\Http\Requests\Blog\CreateRequest;
 use App\Http\Requests\Blog\ReadRequest;
 use App\Http\Requests\Blog\UpdateRequest;
+use App\Http\Requests\Blog\DeleteRequest;
 
 class Blog extends Controller
 {
@@ -25,7 +26,7 @@ class Blog extends Controller
             $message = $this->getMessage('error',
                 [Request::ERROR_DATABASE_INTERNAL_ERROR]
             );
-        } 
+        }
         return json_encode($message);
     }
 
@@ -78,8 +79,24 @@ class Blog extends Controller
             $message = $this->getMessage('error',
                 [Request::ERROR_DATABASE_BLOG_NOT_FOUND]
             );
-        } 
+        }
         return json_encode($message);
     }
 
+    public function delete(DeleteRequest $request, $blogId)
+    {
+        if ($deleted = BlogModel::deleteBlog($request->input(), $blogId))
+        {
+            $message = $this->getMessage('success', [
+                $deleted,
+            ]);
+        }
+        else
+        {
+            $message = $this->getMessage('error',
+                [Request::ERROR_DATABASE_BLOG_NOT_FOUND]
+            );
+        }
+        return json_encode($message);
+    }
 }

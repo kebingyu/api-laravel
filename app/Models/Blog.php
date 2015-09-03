@@ -57,4 +57,13 @@ class Blog extends Model
         }
         return false;
     }
+
+    static public function deleteBlog(array $data, $blogId)
+    {
+        if ($blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first())
+        {
+            return $blog->delete();
+        }
+        return false;
+    }
 }
