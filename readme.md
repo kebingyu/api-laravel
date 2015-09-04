@@ -24,10 +24,10 @@
 * A POST to /v1/user : Register a new user.
 * A PUT to /v1/user/[:key] : Update user info by user id/name/email. Access token required.
 * A DELETE to /v1/user/[:key] : Delete user by user id/name/email. Access token required.
-------
+***
 * A POST to /login : User log in. Receive an access token. 
 * A POST to /logout : User log out. Access token required.
-------
+***
 * A GET to /v1/blog/[:id] : Retrieve blog info by blog id. Access token required.
 * A POST to /v1/blog : Create a new blog. Access token required.
 * A PUT to /v1/blog/[:id] : Update blog info by blog id. Access token required.
