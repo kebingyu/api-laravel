@@ -12,7 +12,7 @@
 * Put in `cp .env.example .env`
 * Put in `php artisan key:generate`
 * Edit .env and put in database credential. If you have problem connecting to localhost, try to use `DB_HOST=127.0.0.1`
-* Create the database you just used in .env
+* Create the database you just used in .env in mysql
 * Put in `php artisan migrate:refresh --seed`
 * Put in `vendor/bin/phpunit tests/` and make sure all tests are green
 * Set up a site using apache or use PHP built-in web server by putting in `php artisan serve`
@@ -20,15 +20,15 @@
 
 ## API
 
-* A GET to /v1/user/[:key] : retrieve user info by user id/name/email. Access token required.
-* A POST to /v1/user : register a new user.
-* A PUT to /v1/user/[:key] : update user info by user id/name/email. Access token required.
-* A DELETE to /v1/user/[:key] : delete user by user id/name/email. Access token required.
-***
-* A POST to /login : user log in. Receive an access token. 
-* A POST to /logout : user log out. Access token required.
-***
-* A GET to /v1/blog/[:id] : retrieve blog info by blog id. Access token required.
-* A POST to /v1/blog : create a new blog. Access token required.
-* A PUT to /v1/blog/[:id] : update blog info by blog id. Access token required.
-* A DELETE to /v1/blog/[:id] : delete blog by blog id. Access token required.
+* A GET to /v1/user/[:key] : Retrieve user info by user id/name/email. Access token required.
+* A POST to /v1/user : Register a new user.
+* A PUT to /v1/user/[:key] : Update user info by user id/name/email. Access token required.
+* A DELETE to /v1/user/[:key] : Delete user by user id/name/email. Access token required.
+------
+* A POST to /login : User log in. Receive an access token. 
+* A POST to /logout : User log out. Access token required.
+------
+* A GET to /v1/blog/[:id] : Retrieve blog info by blog id. Access token required.
+* A POST to /v1/blog : Create a new blog. Access token required.
+* A PUT to /v1/blog/[:id] : Update blog info by blog id. Access token required.
+* A DELETE to /v1/blog/[:id] : Delete blog by blog id. Access token required.
