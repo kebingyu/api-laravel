@@ -20,12 +20,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('tester'),
         ]);
 
-        DB::table('blog')->insert([
-            'title'   => 'Test blog title',
-            'content' => 'Test blog content.',
-            'user_id' => 1,
-        ]);
-
         Model::reguard();
     }
 }

@@ -80,14 +80,6 @@ class UserTest extends TestCase
         $this->assertEquals(true, $array['success']['username'] == $this->testUsername);
     }
 
-    public function testUserDeleteSuccess()
-    {
-        $response = $this->call('DELETE', $this->endpoint . $this->testUsername);
-        $this->assertEquals(200, $response->status());
-        $array = json_decode($response->content(), true);
-        $this->assertEquals(true, isset($array['success']));
-    }
-
     public function testUserLogin()
     {
         $response = $this->call('POST', '/login', [
@@ -96,17 +88,27 @@ class UserTest extends TestCase
         ]);
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']['token']));
+        return $array['success']['token'];
     }
 
-    /*
-    public function testUserLogout()
+    /**
+     *  @depends testUserLogin
+     */
+    public function testUserLogout($token)
     {
         $response = $this->call('POST', '/logout', [
             'user_id' => $this->seederUserId,
-            'token' => $this->seederAccessToken,
+            'token' => $token,
         ]);
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']['loggedout']));
     }
-     */
+
+    public function testUserDeleteSuccess()
+    {
+        $response = $this->call('DELETE', $this->endpoint . $this->testUsername);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']));
+    }
 }

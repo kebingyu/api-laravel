@@ -11,7 +11,6 @@ class BlogTest extends TestCase
 
     // seeder data from database/seeds/DatabaseSeeder.php
     private $seederUserId = 1;
-    private $seederBlogId = 1;
 
     private $testBlogTitle   = 'Blog test title';
     private $testBlogContent = 'This is a test blog.';
@@ -27,6 +26,7 @@ class BlogTest extends TestCase
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']['id']));
         $this->assertEquals(true, isset($array['success']['created_at']));
+        return $array['success']['id'];
     }
 
     public function testReadBlogByUserId()
@@ -38,34 +38,41 @@ class BlogTest extends TestCase
         $this->assertEquals(true, count($array['success']) >= 1);
     }
 
-    public function testReadBlogByBlogId()
+    /**
+     *  @depends testCreateBlog
+     */
+    public function testReadBlogByBlogId($blogId)
     {
         $response = $this->call('GET', $this->endpoint
-            . '/' . $this->seederBlogId . '?user_id=' . $this->seederUserId);
+            . '/' . $blogId . '?user_id=' . $this->seederUserId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['success']['id'] == $this->seederBlogId);
+        $this->assertEquals(true, $array['success']['id'] == $blogId);
     }
 
-    public function testUpdateBlogByBlogId()
+    /**
+     *  @depends testCreateBlog
+     */
+    public function testUpdateBlogByBlogId($blogId)
     {
         $response = $this->call('PUT', $this->endpoint
-            . '/' . $this->seederBlogId . '?user_id=' . $this->seederUserId, [
+            . '/' . $blogId . '?user_id=' . $this->seederUserId, [
                 'content' => 'This is updated test blog',
         ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
-        $this->assertEquals(true, $array['success']['id'] == $this->seederBlogId);
+        $this->assertEquals(true, $array['success']['id'] == $blogId);
     }
 
-    /*
-    public function testDeleteBlogByBlogId()
+    /**
+     *  @depends testCreateBlog
+     */
+    public function testDeleteBlogByBlogId($blogId)
     {
         $response = $this->call('DELETE', $this->endpoint
-            . '/' . $this->seederBlogId . '?user_id=' . $this->seederUserId);
+            . '/' . $blogId . '?user_id=' . $this->seederUserId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']));
     }
-     */
 }
