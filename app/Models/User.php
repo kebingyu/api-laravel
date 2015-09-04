@@ -109,4 +109,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
+
+    /**
+     * Build relationship with "blog" table
+     * 
+     * @return Collections
+     */
+    public function blogs()
+    {
+        return $this->hasMany('App\Models\Blog');
+    }
 }

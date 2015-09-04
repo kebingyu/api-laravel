@@ -49,6 +49,30 @@ Route::group(['middleware' => 'auth.access'], function() {
     Route::delete('/v1/blog/{id}', [
         'uses' => 'Blog@delete',
     ]);
+    // Create new tag
+    Route::post('/v1/tag', [
+        'uses' => 'Tag@create',
+    ]);
+    // Retrieve all tags belongs to user
+    Route::get('/v1/tag/user/{id}', [
+        'uses' => 'Tag@readByUser',
+    ]);
+    // Retrieve all tags belongs to blog
+    Route::get('/v1/tag/blog/{id}', [
+        'uses' => 'Tag@readByBlog',
+    ]);
+    // Delete tag by tag id
+    Route::delete('/v1/tag/{id}', [
+        'uses' => 'Tag@deleteByTag',
+    ]);
+    // Delete all tags belongs to user
+    Route::delete('/v1/tag/user/{id}', [
+        'uses' => 'Tag@deleteByUser',
+    ]);
+    // Delete all tags belongs to blog
+    Route::delete('/v1/tag/blog/{id}', [
+        'uses' => 'Tag@deleteByBlog',
+    ]);
 });
 
 // Sign up new user

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Blog extends Model
 {
@@ -38,19 +39,19 @@ class Blog extends Model
     {
         if ($blogId)
         {
-            $blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first();
+            $blog = static::findViewable($data, $blogId);
         }
         else
         {
             // Collections of model
-            $blog = static::where('user_id', $data['user_id'])->get();
+            $blog = User::find($data['user_id'])->blogs;
         }
         return $blog;
     }
 
     static public function updateBlog(array $data, $blogId)
     {
-        if ($blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first())
+        if ($blog = static::findViewable($data, $blogId))
         {
             $blog->update(array_filter($data));
             return $blog;
@@ -60,10 +61,41 @@ class Blog extends Model
 
     static public function deleteBlog(array $data, $blogId)
     {
-        if ($blog = static::where('id', $blogId)->where('user_id', $data['user_id'])->first())
+        if ($blog = static::findDeletable($data, $blogId))
         {
+            // Todo: need to delete relationship also
             return $blog->delete();
         }
         return false;
+    }
+
+    static protected function findViewable(array $data, $blogId)
+    {
+        $blog = static::find($blogId);
+        if ($blog && $blog->user->id == $data['user_id'])
+        {
+            return $blog;
+        }
+        return false;
+    }
+
+    static protected function findEditable(array $data, $blogId)
+    {
+        return static::findViewable($data, $blogId);
+    }
+
+    static protected function findDeletable(array $data, $blogId)
+    {
+        return static::findViewable($data, $blogId);
+    }
+
+    /**
+     * Build relationship with "user" table
+     * 
+     * @return Model
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
     }
 }

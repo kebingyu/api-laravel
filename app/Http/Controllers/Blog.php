@@ -17,7 +17,7 @@ class Blog extends Controller
         if ($blog = BlogModel::createBlog($request->input()))
         {
             $message = $this->getMessage('success', [
-                'id'    => $blog->id,
+                'id'         => $blog->id,
                 'created_at' => $blog->created_at,
             ]);
         }

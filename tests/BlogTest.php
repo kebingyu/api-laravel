@@ -7,17 +7,19 @@ class BlogTest extends TestCase
 {
     use WithoutMiddleware;
 
-    protected $endpoint = '/v1/blog';
+    protected $blogEndpoint = '/v1/blog';
+    protected $tagEndpoint = '/v1/tag';
 
     // seeder data from database/seeds/DatabaseSeeder.php
     private $seederUserId = 1;
 
     private $testBlogTitle   = 'Blog test title';
     private $testBlogContent = 'This is a test blog.';
+    private $testTagContent  = 'TestTag';
 
     public function testCreateBlog()
     {
-        $response = $this->call('POST', $this->endpoint, [
+        $response = $this->call('POST', $this->blogEndpoint, [
             'user_id' => $this->seederUserId,
             'title'   => $this->testBlogTitle,
             'content' => $this->testBlogContent,
@@ -31,7 +33,7 @@ class BlogTest extends TestCase
 
     public function testReadBlogByUserId()
     {
-        $response = $this->call('GET', $this->endpoint . '?user_id=' . $this->seederUserId);
+        $response = $this->call('GET', $this->blogEndpoint . '?user_id=' . $this->seederUserId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']));
@@ -43,7 +45,7 @@ class BlogTest extends TestCase
      */
     public function testReadBlogByBlogId($blogId)
     {
-        $response = $this->call('GET', $this->endpoint
+        $response = $this->call('GET', $this->blogEndpoint
             . '/' . $blogId . '?user_id=' . $this->seederUserId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
@@ -55,7 +57,7 @@ class BlogTest extends TestCase
      */
     public function testUpdateBlogByBlogId($blogId)
     {
-        $response = $this->call('PUT', $this->endpoint
+        $response = $this->call('PUT', $this->blogEndpoint
             . '/' . $blogId . '?user_id=' . $this->seederUserId, [
                 'content' => 'This is updated test blog',
         ]);
@@ -67,9 +69,27 @@ class BlogTest extends TestCase
     /**
      *  @depends testCreateBlog
      */
+    /*
+    public function testCreateTag($blogId)
+    {
+        $response = $this->call('POST', $this->tagEndpoint, [
+            'blog_id' => $blogId,
+            'content' => $this->testTagContent,
+        ]);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']['id']));
+        $this->assertEquals(true, $array['success']['content'] == $this->testTagContent);
+        return $array['success']['id'];
+    }
+     */
+
+    /**
+     *  @depends testCreateBlog
+     */
     public function testDeleteBlogByBlogId($blogId)
     {
-        $response = $this->call('DELETE', $this->endpoint
+        $response = $this->call('DELETE', $this->blogEndpoint
             . '/' . $blogId . '?user_id=' . $this->seederUserId);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
