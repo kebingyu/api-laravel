@@ -98,4 +98,14 @@ class Blog extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    /**
+     * Build relationship with "tag" table through pivot table "blog_tag"
+     * 
+     * @return Collections
+     */
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag', 'blog_tag', 'blog_id', 'tag_id');
+    }
 }

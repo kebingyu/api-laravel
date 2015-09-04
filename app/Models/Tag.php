@@ -38,7 +38,22 @@ class Tag extends Model
         return false;
     }
 
-    static public function deleteByTag()
+    static public function deleteByTag(array $data, $tagId)
     {
+        if (BlogTag::deleteBlogTag($tagId))
+        {
+            return static::destroy($tagId);
+        }
+        return false;
+    }
+
+    /**
+     * Build relationship with "blog" table through pivot table "blog_tag"
+     * 
+     * @return Collections
+     */
+    public function blogs()
+    {
+        return $this->belongsToMany('App\Models\Blog', 'blog_tag', 'tag_id', 'blog_id');
     }
 }

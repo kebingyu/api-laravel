@@ -26,4 +26,9 @@ class BlogTag extends Model
     {
         return static::create($data);
     }
+
+    static public function deleteBlogTag($tagId)
+    {
+        return static::where('tag_id', $tagId)->delete();
+    }
 }

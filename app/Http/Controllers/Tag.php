@@ -28,5 +28,16 @@ class Tag extends Controller
 
     public function deleteByTag(DeleteRequest $request, $tagId)
     {
+        if ($deleted = TagModel::deleteByTag($request->input(), $tagId))
+        {
+            $message = $this->getMessage('success', [$deleted]);
+        }
+        else
+        {
+            $message = $this->getMessage('error',
+                [Request::ERROR_DATABASE_INTERNAL_ERROR]
+            );
+        }
+        return json_encode($message);
     }
 }

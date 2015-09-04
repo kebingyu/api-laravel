@@ -69,7 +69,6 @@ class BlogTest extends TestCase
     /**
      *  @depends testCreateBlog
      */
-    /*
     public function testCreateTag($blogId)
     {
         $response = $this->call('POST', $this->tagEndpoint, [
@@ -82,7 +81,18 @@ class BlogTest extends TestCase
         $this->assertEquals(true, $array['success']['content'] == $this->testTagContent);
         return $array['success']['id'];
     }
+
+    /**
+     *  @depends testCreateTag
      */
+    public function testDeleteTagByTagId($tagId)
+    {
+        $response = $this->call('DELETE', $this->tagEndpoint
+            . '/' . $tagId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']));
+    }
 
     /**
      *  @depends testCreateBlog
