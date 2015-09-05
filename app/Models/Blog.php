@@ -63,7 +63,7 @@ class Blog extends Model
     {
         if ($blog = static::findDeletable($data, $blogId))
         {
-            // Todo: need to delete relationship also
+            BlogTag::deleteByBlogId($blogId);
             return $blog->delete();
         }
         return false;

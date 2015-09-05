@@ -55,23 +55,23 @@ Route::group(['middleware' => 'auth.access'], function() {
     ]);
     // Retrieve all tags belongs to user
     Route::get('/v1/tag/user/{id}', [
-        'uses' => 'Tag@readByUser',
+        'uses' => 'Tag@readByUserId',
     ]);
     // Retrieve all tags belongs to blog
     Route::get('/v1/tag/blog/{id}', [
-        'uses' => 'Tag@readByBlog',
+        'uses' => 'Tag@readByBlogId',
     ]);
     // Delete tag by tag id
     Route::delete('/v1/tag/{id}', [
-        'uses' => 'Tag@deleteByTag',
+        'uses' => 'Tag@deleteByTagId',
     ]);
     // Delete all tags belongs to user
     Route::delete('/v1/tag/user/{id}', [
-        'uses' => 'Tag@deleteByUser',
+        'uses' => 'Tag@deleteByUserId',
     ]);
     // Delete all tags belongs to blog
     Route::delete('/v1/tag/blog/{id}', [
-        'uses' => 'Tag@deleteByBlog',
+        'uses' => 'Tag@deleteByBlogId',
     ]);
 });
 

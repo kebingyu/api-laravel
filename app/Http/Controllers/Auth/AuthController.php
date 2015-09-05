@@ -101,7 +101,7 @@ class AuthController extends Controller
         else
         {
             $message = $this->getMessage('error',
-                [false]
+                [Request::ERROR_DATABASE_ACCESS_TOKEN_NOT_FOUND]
             );
         }
         return json_encode($message);

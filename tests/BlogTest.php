@@ -83,6 +83,19 @@ class BlogTest extends TestCase
     }
 
     /**
+     *  @depends testCreateBlog
+     */
+    public function testReadTagByBlogId($blogId)
+    {
+        $response = $this->call('GET', $this->tagEndpoint
+            . '/blog/' . $blogId . '?user_id=' . $this->seederUserId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']));
+        $this->assertEquals(true, count($array['success']) >= 1);
+    }
+
+    /**
      *  @depends testCreateTag
      */
     public function testDeleteTagByTagId($tagId)

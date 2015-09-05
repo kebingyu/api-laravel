@@ -38,9 +38,9 @@ class Tag extends Model
         return false;
     }
 
-    static public function deleteByTag(array $data, $tagId)
+    static public function deleteByTagId($tagId)
     {
-        if (BlogTag::deleteBlogTag($tagId))
+        if (BlogTag::deleteByTagId($tagId))
         {
             return static::destroy($tagId);
         }

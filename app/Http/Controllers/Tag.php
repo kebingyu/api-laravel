@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag as TagModel;
+use App\Models\Blog as BlogModel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Request;
 use App\Http\Requests\Tag\CreateRequest;
 use App\Http\Requests\Tag\ReadRequest;
-use App\Http\Requests\Tag\DeleteRequest;
 
 class Tag extends Controller
 {
@@ -26,9 +26,29 @@ class Tag extends Controller
         return json_encode($message);
     }
 
-    public function deleteByTag(DeleteRequest $request, $tagId)
+    public function readByBlogId(ReadRequest $request, $blogId)
     {
-        if ($deleted = TagModel::deleteByTag($request->input(), $tagId))
+        if ($blog = BlogModel::findBlog($request->input(), $blogId))
+        {
+            $data = [];
+            foreach ($blog->tags as $tag)
+            {
+                $data[] = $tag->toArray();
+            }
+            $message = $this->getMessage('success', $data);
+        }
+        else
+        {
+            $message = $this->getMessage('error',
+                [Request::ERROR_DATABASE_TAG_NOT_FOUND]
+            );
+        }
+        return json_encode($message);
+    }
+
+    public function deleteByTagId($tagId)
+    {
+        if ($deleted = TagModel::deleteByTagId($tagId))
         {
             $message = $this->getMessage('success', [$deleted]);
         }
