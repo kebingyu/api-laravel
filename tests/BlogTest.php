@@ -71,7 +71,8 @@ class BlogTest extends TestCase
      */
     public function testCreateTag($blogId)
     {
-        $response = $this->call('POST', $this->tagEndpoint, [
+        $response = $this->call('POST', $this->tagEndpoint
+            . '?user_id=' . $this->seederUserId, [
             'blog_id' => $blogId,
             'content' => $this->testTagContent,
         ]);
@@ -98,10 +99,26 @@ class BlogTest extends TestCase
     /**
      *  @depends testCreateTag
      */
-    public function testDeleteTagByTagId($tagId)
+    public function testReadTagByUserId($tagId)
+    {
+        $response = $this->call('GET', $this->tagEndpoint
+            . '/user/' . $this->seederUserId . '?user_id=' . $this->seederUserId);
+        $this->assertEquals(200, $response->status());
+        $array = json_decode($response->content(), true);
+        $this->assertEquals(true, isset($array['success']));
+        $this->assertEquals(true, count($array['success']) >= 1);
+    }
+
+    /**
+     *  @depends testCreateBlog
+     *  @depends testCreateTag
+     */
+    public function testDeleteTagByTagId($blogId, $tagId)
     {
         $response = $this->call('DELETE', $this->tagEndpoint
-            . '/' . $tagId);
+            . '/' . $tagId, [
+            'blog_id' => $blogId,
+        ]);
         $this->assertEquals(200, $response->status());
         $array = json_decode($response->content(), true);
         $this->assertEquals(true, isset($array['success']));

@@ -32,8 +32,19 @@ class BlogTag extends Model
         return static::where('tag_id', $id)->delete();
     }
 
+    static public function deleteByTagAndBlogId($blogId, $tagId)
+    {
+        return static::where('tag_id', $tagId)
+            ->where('blog_id', $blogId)->delete();
+    }
+
     static public function deleteByBlogId($id)
     {
         return static::where('blog_id', $id)->delete();
+    }
+
+    static public function isOrphanTag($tagId)
+    {
+        return static::where('tag_id', $tagId)->count() == 0;
     }
 }

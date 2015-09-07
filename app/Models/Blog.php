@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Tag;
 
 class Blog extends Model
 {
@@ -63,13 +64,17 @@ class Blog extends Model
     {
         if ($blog = static::findDeletable($data, $blogId))
         {
-            BlogTag::deleteByBlogId($blogId);
+            $data['blog_id'] = $blogId;
+            foreach ($blog->tags as $tag)
+            {
+                Tag::deleteFromBlog($data, $tag->id);
+            }
             return $blog->delete();
         }
         return false;
     }
 
-    static protected function findViewable(array $data, $blogId)
+    static public function findViewable(array $data, $blogId)
     {
         $blog = static::find($blogId);
         if ($blog && $blog->user->id == $data['user_id'])
@@ -79,12 +84,12 @@ class Blog extends Model
         return false;
     }
 
-    static protected function findEditable(array $data, $blogId)
+    static public function findEditable(array $data, $blogId)
     {
         return static::findViewable($data, $blogId);
     }
 
-    static protected function findDeletable(array $data, $blogId)
+    static public function findDeletable(array $data, $blogId)
     {
         return static::findViewable($data, $blogId);
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BlogTag;
+use App\Models\User;
 
 class Tag extends Model
 {
@@ -21,12 +22,23 @@ class Tag extends Model
      *
      * @var array
      */
-    protected $fillable = ['content'];
+    protected $fillable = ['content', 'user_id'];
 
     static public function createTag(array $data)
     {
-        $tag = static::create($data);
-        if ($tag)
+        // First check if tag with same content 
+        // is already being used by this blog
+        if ($tag = static::usedByBlog($data, $data['content']))
+        {
+            return true;
+        }
+        // Second check if tag with same content
+        // is already created by this user
+        // Else create a new one
+        if (
+            ($tag = static::createdByUser($data['user_id'], $data['content']))
+            || ($tag = static::create($data))
+        )
         {
             $data['tag_id'] = $tag->id;
             $blogTag = BlogTag::createBlogTag($data);
@@ -38,13 +50,80 @@ class Tag extends Model
         return false;
     }
 
-    static public function deleteByTagId($tagId)
+    static protected function createdByUser($userId, $content)
     {
-        if (BlogTag::deleteByTagId($tagId))
+        if ($user = User::find($userId))
         {
-            return static::destroy($tagId);
+            if ($tag = $user->tags()->where('content', $content)->first())
+            {
+                return $tag;
+            }
         }
         return false;
+    }
+
+    static protected function usedByBlog(array $data, $content)
+    {
+        if ($blog = Blog::findViewable($data, $data['blog_id']))
+        {
+            if ($tag = $blog->tags()->where('content', $content)->first())
+            {
+                return $tag;
+            }
+        }
+        return false;
+    }
+
+    static public function getTagsByBlogId(array $data, $blogId)
+    {
+        if ($blog = Blog::findBlog($data, $blogId))
+        {
+            $tags = [];
+            foreach ($blog->tags as $tag)
+            {
+                $tags[] = $tag->toArray();
+            }
+            return $tags;
+        }
+        return false;
+    }
+
+    static public function getTagsByUserId(array $data, $userId)
+    {
+        if ($user = User::find($userId))
+        {
+            $tags = [];
+            foreach ($user->tags as $tag)
+            {
+                $tags[] = $tag->toArray();
+            }
+            return $tags;
+        }
+        return false;
+    }
+
+    static public function deleteFromBlog(array $data, $tagId)
+    {
+        if (BlogTag::deleteByTagAndBlogId($data['blog_id'], $tagId))
+        {
+            // Delete tag when no blog links to it
+            if (BlogTag::isOrphanTag($tagId))
+            {
+                return static::destroy($tagId);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Build relationship with "user" table
+     * 
+     * @return Model
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
     }
 
     /**

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag as TagModel;
-use App\Models\Blog as BlogModel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Request;
 use App\Http\Requests\Tag\CreateRequest;
 use App\Http\Requests\Tag\ReadRequest;
+use App\Http\Requests\Tag\DeleteRequest;
 
 class Tag extends Controller
 {
@@ -15,7 +15,15 @@ class Tag extends Controller
     {
         if ($tag = TagModel::createTag($request->input()))
         {
-            $message = $this->getMessage('success', $tag->toArray());
+            // Tag with same content already used by this blog
+            if ($tag === true)
+            {
+                $message = $this->getMessage('success', []);
+            }
+            else
+            {
+                $message = $this->getMessage('success', $tag->toArray());
+            }
         }
         else
         {
@@ -23,19 +31,14 @@ class Tag extends Controller
                 [Request::ERROR_DATABASE_INTERNAL_ERROR]
             );
         }
-        return json_encode($message);
+        return json_encode($message, JSON_FORCE_OBJECT);
     }
 
     public function readByBlogId(ReadRequest $request, $blogId)
     {
-        if ($blog = BlogModel::findBlog($request->input(), $blogId))
+        if ($tags = TagModel::getTagsByBlogId($request->input(), $blogId))
         {
-            $data = [];
-            foreach ($blog->tags as $tag)
-            {
-                $data[] = $tag->toArray();
-            }
-            $message = $this->getMessage('success', $data);
+            $message = $this->getMessage('success', $tags);
         }
         else
         {
@@ -46,9 +49,24 @@ class Tag extends Controller
         return json_encode($message);
     }
 
-    public function deleteByTagId($tagId)
+    public function readByUserId(ReadRequest $request, $userId)
     {
-        if ($deleted = TagModel::deleteByTagId($tagId))
+        if ($tags = TagModel::getTagsByUserId($request->input(), $userId))
+        {
+            $message = $this->getMessage('success', $tags);
+        }
+        else
+        {
+            $message = $this->getMessage('error',
+                [Request::ERROR_DATABASE_TAG_NOT_FOUND]
+            );
+        }
+        return json_encode($message);
+    }
+
+    public function deleteFromBlog(DeleteRequest $request, $tagId)
+    {
+        if ($deleted = TagModel::deleteFromBlog($request->input(), $tagId))
         {
             $message = $this->getMessage('success', [$deleted]);
         }

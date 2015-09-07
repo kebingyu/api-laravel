@@ -61,9 +61,9 @@ Route::group(['middleware' => 'auth.access'], function() {
     Route::get('/v1/tag/blog/{id}', [
         'uses' => 'Tag@readByBlogId',
     ]);
-    // Delete tag by tag id
+    // Delete tag from blog
     Route::delete('/v1/tag/{id}', [
-        'uses' => 'Tag@deleteByTagId',
+        'uses' => 'Tag@deleteFromBlog',
     ]);
     // Delete all tags belongs to user
     Route::delete('/v1/tag/user/{id}', [
