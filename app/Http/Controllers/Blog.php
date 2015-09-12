@@ -34,7 +34,7 @@ class Blog extends Controller
     {
         if ($blog = BlogModel::findBlog($request->input(), $blogId))
         {
-            $message = $this->getMessage('success', $blog->toArray());
+            $message = $this->getMessage('success', $this->getFullData($blog));
         }
         else
         {
@@ -52,7 +52,7 @@ class Blog extends Controller
             $data = [];
             foreach ($blogs as $blog)
             {
-                $data[] = $blog->toArray();
+                $data[] = $this->getFullData($blog);
             }
             $message = $this->getMessage('success', $data);
         }
@@ -98,5 +98,18 @@ class Blog extends Controller
             );
         }
         return json_encode($message);
+    }
+
+    protected function getFullData($blog)
+    {
+        $data = $blog->toArray();
+        foreach ($blog->tags as $tag)
+        {
+            $data['tags'][] = [
+                'id'      => $tag->id,
+                'content' => $tag->content,
+            ];
+        }
+        return $data;
     }
 }
